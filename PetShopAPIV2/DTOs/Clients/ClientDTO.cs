@@ -8,6 +8,7 @@ namespace PetShopAPIV2.DTOs.Clients
         public string FirstName { get; set; } = string.Empty;
         public string LastName { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
+        public ICollection<ClientPetOutputDTO> Pets { get; set; }
 
         public ClientDTO() { }
 

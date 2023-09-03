@@ -1,4 +1,5 @@
-﻿using PetShopAPIV2.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using PetShopAPIV2.Data;
 using PetShopAPIV2.Entities;
 using PetShopAPIV2.Interfaces;
 
@@ -22,6 +23,11 @@ namespace PetShopAPIV2.Repositories
             _context.Clients.Remove(client);
         }
 
+        public bool Exists(int id)
+        {
+            return _context.Clients.Any((client) => client.Id == id);
+        }
+
         public ICollection<Client> FindAll()
         {
             return _context.Clients.ToList();
@@ -37,6 +43,15 @@ namespace PetShopAPIV2.Repositories
         public Client? FindById(int id)
         {
             return _context.Clients.Find(id);
+        }
+
+        public Client? FindByIdWithPets(int id)
+        {
+            return _context.Clients
+                .Where((client) => client.Id == id)
+                .Include((client) => client.Pets)
+                .ThenInclude((pet) => pet.Animal)
+                .FirstOrDefault();
         }
 
         public void Save(Client client)

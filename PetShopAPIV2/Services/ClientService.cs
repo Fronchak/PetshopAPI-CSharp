@@ -30,12 +30,22 @@ namespace PetShopAPIV2.Services
             client.Email = clientInputDTO.Email;
         }
 
-        public ClientDTO MapToClientDTO(Client client)
+        public static ClientDTO MapToClientDTO(Client client)
         {
-            return new ClientDTO(client);
+            ClientDTO clientDTO = new ClientDTO(client);
+            clientDTO.Pets = client.Pets
+                .ToList()
+                .Select((pet) =>
+                {
+                    ClientPetOutputDTO petDTO = new ClientPetOutputDTO(pet);
+                    petDTO.Animal = AnimalService.MapToDTO(pet.Animal);
+                    return petDTO;
+                })
+                .ToList();
+            return clientDTO;
         }
 
-        public ClientSimpleDTO MapToSimpleClientDTO(Client client)
+        public static ClientSimpleDTO MapToSimpleClientDTO(Client client)
         {
             return new ClientSimpleDTO(client);
         }
@@ -51,7 +61,7 @@ namespace PetShopAPIV2.Services
 
         public ClientDTO FindById(int id)
         {
-            Client? client = _clientRepository.FindById(id);
+            Client? client = _clientRepository.FindByIdWithPets(id);
             if(client == null)
             {
                 throw new EntityNotFoundException("Client not found");

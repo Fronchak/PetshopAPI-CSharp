@@ -8,10 +8,12 @@ namespace PetShopAPIV2.Services
     public class AnimalService
     {
         private readonly IAnimalRepository _animalRepository;
+        private readonly IPetRepository _petRepository;
 
-        public AnimalService(IAnimalRepository animalRepository)
+        public AnimalService(IAnimalRepository animalRepository, IPetRepository petRepository)
         {
             _animalRepository = animalRepository;
+            _petRepository = petRepository;
         }
 
         public AnimalDTO Save(AnimalInsertDTO animalInsertDTO)
@@ -20,14 +22,12 @@ namespace PetShopAPIV2.Services
             animal.Name = animalInsertDTO.Name;
             _animalRepository.Save(animal);
             _animalRepository.Commit();
-            return mapToDTO(animal);
+            return MapToDTO(animal);
         }
 
-        private AnimalDTO mapToDTO(Animal animal)
+        public static AnimalDTO MapToDTO(Animal animal)
         {
-            AnimalDTO animalDTO = new AnimalDTO();
-            animalDTO.Id = animal.Id;
-            animalDTO.Name = animal.Name;
+            AnimalDTO animalDTO = new AnimalDTO(animal);
             return animalDTO;
         }
 
@@ -35,7 +35,7 @@ namespace PetShopAPIV2.Services
         {
             ICollection<Animal> animals = _animalRepository.FindAll();
             return animals.ToList()
-                .Select((animal) => mapToDTO(animal))
+                .Select((animal) => MapToDTO(animal))
                 .ToList();
 
         }
@@ -43,7 +43,7 @@ namespace PetShopAPIV2.Services
         public AnimalDTO FindById(int id)
         {
             Animal animal = GetAnimalById(id);
-            return mapToDTO(animal);
+            return MapToDTO(animal);
         }
 
         private Animal GetAnimalById(int id)
@@ -62,12 +62,17 @@ namespace PetShopAPIV2.Services
             animal.Name = animalUpdateDTO.Name;
             _animalRepository.Update(animal);
             _animalRepository.Commit();
-            return mapToDTO(animal);
+            return MapToDTO(animal);
         }
 
         public void DeleteById(int id)
         {
             Animal animal = GetAnimalById(id);
+            bool existAnyPet = _petRepository.ExistsAnyPetOfAnimalType(id);
+            if(existAnyPet)
+            {
+                throw new BadRequestException("This animal type cannot be deleted");
+            }
             _animalRepository.Delete(animal);
             _animalRepository.Commit();
         }

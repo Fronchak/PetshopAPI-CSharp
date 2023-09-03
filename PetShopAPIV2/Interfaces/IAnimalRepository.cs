@@ -4,9 +4,11 @@ namespace PetShopAPIV2.Interfaces
 {
     public interface IAnimalRepository
     {
-        Animal FindById(int id);
+        Animal? FindById(int id);
 
-        Animal FindByName(string name);
+        Animal? FindByName(string name);
+
+        bool Exists(int id);
 
         ICollection<Animal> FindAll();
 

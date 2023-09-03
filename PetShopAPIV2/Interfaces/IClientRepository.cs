@@ -6,7 +6,11 @@ namespace PetShopAPIV2.Interfaces
     {
         Client? FindById(int id);
 
+        Client? FindByIdWithPets(int id);
+
         Client? FindByEmail(string email);
+
+        bool Exists(int id);
 
         ICollection<Client> FindAll();
 

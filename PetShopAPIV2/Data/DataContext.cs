@@ -11,8 +11,8 @@ namespace PetShopAPIV2.Data
         public DbSet<User> Users { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<UserRole> UserRoles { get; set; }
-
         public DbSet<Client> Clients { get; set; }
+        public DbSet<Pet> Pets { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

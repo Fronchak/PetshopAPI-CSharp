@@ -26,17 +26,22 @@ namespace PetShopAPIV2.Repositories
             _context.Remove(animal);
         }
 
+        public bool Exists(int id)
+        {
+            return _context.Animals.Any((animal) => animal.Id == id);
+        }
+
         public ICollection<Animal> FindAll()
         {
             return _context.Animals.ToList();
         }
 
-        public Animal FindById(int id)
+        public Animal? FindById(int id)
         {
             return _context.Animals.Find(id);
         }
 
-        public Animal FindByName(string name)
+        public Animal? FindByName(string name)
         {
             return _context.Animals
                 .Where((animal) => animal.Name == name)
