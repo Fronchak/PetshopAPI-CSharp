@@ -14,11 +14,11 @@ namespace PetShopAPIV2.DTOs.Clients
             HttpContext context = accessor.HttpContext;
             RouteData routeData = context.GetRouteData();
             RouteValueDictionary routeValues = routeData.Values;
-            object idObj = routeValues.GetValueOrDefault("id");
+            object? idObj = routeValues.GetValueOrDefault("id");
             int? id = null;
             try
             {
-                id = int.Parse(idObj.ToString());
+                id = int.Parse(idObj?.ToString() ?? "");
             }
             catch (Exception) { }
             Client? client = clientRepository.FindByEmail(Email);

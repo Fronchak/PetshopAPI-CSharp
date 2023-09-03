@@ -18,15 +18,15 @@ namespace PetShopAPIV2.DTOs.Animals
             HttpContext context = accessor.HttpContext;
             RouteData routeData = context.GetRouteData();
             RouteValueDictionary routeValues = routeData.Values;
-            object idObj = routeValues.GetValueOrDefault("id");
+            object? idObj = routeValues.GetValueOrDefault("id");
             int? id = null;
             try
             {
-                id = int.Parse(idObj.ToString());
+                id = int.Parse(idObj?.ToString() ?? "");
             }
             catch (Exception) { }
 
-            Animal animal = animalRepository.FindByName(Name);
+            Animal? animal = animalRepository.FindByName(Name);
             if (animal != null && !animal.Id.Equals(id))
             {
                 ValidationResult validationResult = new ValidationResult("Name is already been used", new[] { nameof(Name) });

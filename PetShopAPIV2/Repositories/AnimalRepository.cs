@@ -1,4 +1,5 @@
-﻿using PetShopAPIV2.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using PetShopAPIV2.Data;
 using PetShopAPIV2.Entities;
 using PetShopAPIV2.Interfaces;
 
@@ -12,9 +13,9 @@ namespace PetShopAPIV2.Repositories
         {
             _context = context;
         }
-        public void Commit()
+        public async Task CommitAsync()
         {
-            int commited = _context.SaveChanges();
+            int commited = await _context.SaveChangesAsync();
             if (commited < 1)
             {
                 throw new Exception("Erro ao salvar mudanças");
@@ -31,14 +32,14 @@ namespace PetShopAPIV2.Repositories
             return _context.Animals.Any((animal) => animal.Id == id);
         }
 
-        public ICollection<Animal> FindAll()
+        public async Task<ICollection<Animal>> FindAllAsync()
         {
-            return _context.Animals.ToList();
+            return await _context.Animals.ToListAsync();
         }
 
-        public Animal? FindById(int id)
+        public async Task<Animal?> FindByIdAsync(int id)
         {
-            return _context.Animals.Find(id);
+            return await _context.Animals.FindAsync(id);
         }
 
         public Animal? FindByName(string name)
@@ -46,6 +47,13 @@ namespace PetShopAPIV2.Repositories
             return _context.Animals
                 .Where((animal) => animal.Name == name)
                 .FirstOrDefault();
+        }
+
+        public async Task<Animal?> FindByNameAsync(string name)
+        {
+            return await _context.Animals
+                .Where((animal) => animal.Name == name)
+                .FirstOrDefaultAsync();
         }
 
         public void Save(Animal animal)

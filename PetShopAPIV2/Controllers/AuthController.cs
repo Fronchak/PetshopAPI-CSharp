@@ -21,23 +21,23 @@ namespace PetShopAPIV2.Controllers
         }
 
         [HttpPost("register")]
-        public ActionResult Register([FromBody] UserRegisterDTO userRegisterDTO)
+        public async Task<IActionResult> Register([FromBody] UserRegisterDTO userRegisterDTO)
         {
-            _authService.Register(userRegisterDTO);
+            await _authService.RegisterAsync(userRegisterDTO);
             return NoContent();
         }
 
         [HttpPost("login")]
-        public ActionResult Login([FromBody] UserLoginDTO userLoginDTO)
+        public async Task<IActionResult> Login([FromBody] UserLoginDTO userLoginDTO)
         {
-            TokenDTO tokenDTO = _authService.Login(userLoginDTO);
+            TokenDTO tokenDTO = await _authService.LoginAsync(userLoginDTO);
             return Ok(tokenDTO);
         }
 
         [HttpGet("me")]
-        public IActionResult Me()
+        public async Task<IActionResult> Me()
         {
-            UserDTOWithRoles dto = _authService.GetAuthenticatedUserDTO();
+            UserDTOWithRoles dto = await _authService.GetAuthenticatedUserDTOAsync();
 
             return Ok(new { 
                 id = dto.Id,

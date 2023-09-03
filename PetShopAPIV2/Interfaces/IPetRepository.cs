@@ -4,12 +4,12 @@ namespace PetShopAPIV2.Interfaces
 {
     public interface IPetRepository
     {
-        List<Pet> FindAll();
-        Pet? FindById(int id);
+        Task<List<Pet>> FindAllAsync();
+        Task<Pet?> FindByIdAsync(int id);
 
-        Pet? FindByIdWithRelationships(int id);
+        Task<Pet?> FindByIdWithRelationshipsAsync(int id);
 
-        bool ExistsAnyPetOfAnimalType(int animalId);
+        Task<bool> ExistsAnyPetOfAnimalTypeAsync(int animalId);
 
         void Save(Pet pet);
 
@@ -17,6 +17,6 @@ namespace PetShopAPIV2.Interfaces
 
         void Delete(Pet pet);
 
-        void Commit();
+        Task CommitAsync();
     }
 }

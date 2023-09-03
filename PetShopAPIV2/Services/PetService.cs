@@ -19,9 +19,9 @@ namespace PetShopAPIV2.Services
             _clientRepository = clientRepository;
         }
 
-        public PetOutputDTO FindById(int id)
+        public async Task<PetOutputDTO> FindByIdAsync(int id)
         {
-            Pet? pet = _petRepository.FindByIdWithRelationships(id);
+            Pet? pet = await _petRepository.FindByIdWithRelationshipsAsync(id);
             if(pet == null)
             {
                 throw new EntityNotFoundException("Pet not found");
@@ -37,51 +37,51 @@ namespace PetShopAPIV2.Services
             return petOutputDTO;
         }
 
-        public ICollection<PetOutputDTO> FindAll()
+        public async Task<ICollection<PetOutputDTO>> FindAllAsync()
         {
-            ICollection<Pet> pets = _petRepository.FindAll();
+            ICollection<Pet> pets = await _petRepository.FindAllAsync();
             return pets.ToList()
                 .Select((pet) => MapToPetOutputDTO(pet))
                 .ToList();
         }
 
-        public PetOutputDTO Save(PetInputDTO petInputDTO)
+        public async Task<PetOutputDTO> SaveAsync(PetInputDTO petInputDTO)
         {
             Pet pet = new Pet();
             pet.Name = petInputDTO.Name;
             pet.Age = petInputDTO.Age;
-            pet.Animal = _animalRepository.FindById(petInputDTO.AnimalId);
-            pet.Owner = _clientRepository.FindById(petInputDTO.OwnerId)!;
+            pet.Animal = await _animalRepository.FindByIdAsync(petInputDTO.AnimalId);
+            pet.Owner = await _clientRepository.FindByIdAsync(petInputDTO.OwnerId)!;
             _petRepository.Save(pet);
-            _petRepository.Commit();
+            await _petRepository.CommitAsync();
             return MapToPetOutputDTO(pet);
         }
 
-        public PetOutputDTO Update(PetInputDTO petInputDTO, int id)
+        public async Task<PetOutputDTO> UpdateAsync(PetInputDTO petInputDTO, int id)
         {
-            Pet pet = _petRepository.FindById(id);
+            Pet pet = await _petRepository.FindByIdAsync(id);
             if(pet == null)
             {
                 throw new EntityNotFoundException("Pet not found");
             }
             pet.Name = petInputDTO.Name;
             pet.Age = petInputDTO.Age;
-            pet.Animal = _animalRepository.FindById(petInputDTO.AnimalId);
-            pet.Owner = _clientRepository.FindById(petInputDTO.OwnerId)!;
+            pet.Animal = await _animalRepository.FindByIdAsync(petInputDTO.AnimalId);
+            pet.Owner = await _clientRepository.FindByIdAsync(petInputDTO.OwnerId)!;
             _petRepository.Update(pet);
-            _petRepository.Commit();
+            await _petRepository.CommitAsync();
             return MapToPetOutputDTO(pet);
         }
 
-        public void DeleteById(int id)
+        public async Task DeleteByIdAsync(int id)
         {
-            Pet? pet = _petRepository.FindById(id);
+            Pet? pet = await _petRepository.FindByIdAsync(id);
             if (pet == null)
             {
                 throw new EntityNotFoundException("Pet not found");
             }
             _petRepository.Delete(pet);
-            _petRepository.Commit();
+            await _petRepository.CommitAsync();
         }
     }
 }

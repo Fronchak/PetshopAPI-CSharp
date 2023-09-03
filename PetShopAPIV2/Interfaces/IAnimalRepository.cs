@@ -4,13 +4,15 @@ namespace PetShopAPIV2.Interfaces
 {
     public interface IAnimalRepository
     {
-        Animal? FindById(int id);
+        Task<Animal?> FindByIdAsync(int id);
+
+        Task<Animal?> FindByNameAsync(string name);
 
         Animal? FindByName(string name);
 
         bool Exists(int id);
 
-        ICollection<Animal> FindAll();
+        Task<ICollection<Animal>> FindAllAsync();
 
         void Save(Animal animal);
 
@@ -18,6 +20,6 @@ namespace PetShopAPIV2.Interfaces
 
         void Delete(Animal animal);
 
-        void Commit();
+        Task CommitAsync();
     }
 }

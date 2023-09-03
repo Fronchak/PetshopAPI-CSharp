@@ -18,40 +18,40 @@ namespace PetShopAPIV2.Controllers
         }
 
         [HttpGet("{id}")]
-        public IActionResult FindById(string id)
+        public async Task<IActionResult> FindById(string id)
         {
             int entityId = ParseUtils.ParsePathParam(id);
-            PetOutputDTO petOutputDTO = _petService.FindById(entityId);
+            PetOutputDTO petOutputDTO = await _petService.FindByIdAsync(entityId);
             return Ok(petOutputDTO);
         }
 
         [HttpGet]
-        public IActionResult FindAll()
+        public async Task<IActionResult> FindAll()
         {
-            ICollection<PetOutputDTO> petDTOs = _petService.FindAll();
+            ICollection<PetOutputDTO> petDTOs = await _petService.FindAllAsync();
             return Ok(petDTOs);
         }
   
         [HttpPost, Authorize(Roles = "Worker,Admin")]
-        public IActionResult Save([FromBody] PetInputDTO petInsertDTO)
+        public async Task<IActionResult> Save([FromBody] PetInputDTO petInsertDTO)
         {
-            PetOutputDTO petOutputDTO = _petService.Save(petInsertDTO);
+            PetOutputDTO petOutputDTO = await _petService.SaveAsync(petInsertDTO);
             return Ok(petOutputDTO);
         }
 
         [HttpPut("{id}"), Authorize(Roles = "Worker,Admin")]
-        public IActionResult Update([FromBody] PetInputDTO petInputDTO, [FromRoute] string id)
+        public async Task<IActionResult> Update([FromBody] PetInputDTO petInputDTO, [FromRoute] string id)
         {
             int entityId = ParseUtils.ParsePathParam(id);
-            PetOutputDTO petOutputDTO = _petService.Update(petInputDTO, entityId);
+            PetOutputDTO petOutputDTO = await _petService.UpdateAsync(petInputDTO, entityId);
             return Ok(petOutputDTO);
         }
 
         [HttpDelete("{id}"), Authorize(Roles = "Admin")]
-        public IActionResult DeleteById(string id)
+        public async Task<IActionResult> DeleteById(string id)
         {
             int entityId = ParseUtils.ParsePathParam(id);
-            _petService.DeleteById(entityId);
+            await _petService.DeleteByIdAsync(entityId);
             return NoContent();
         }
     }

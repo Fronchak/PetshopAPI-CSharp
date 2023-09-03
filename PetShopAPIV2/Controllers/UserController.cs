@@ -18,10 +18,10 @@ namespace PetShopAPIV2.Controllers
         }
 
         [HttpGet("{id}"), Authorize(Roles = "Worker,Admin")]
-        public ActionResult<UserDTOWithRoles> FindById(string id)
+        public async Task<IActionResult> FindById(string id)
         {
             int entityId = ParseUtils.ParsePathParam(id);
-            UserDTOWithRoles userDTO = _userService.FindById(entityId);
+            UserDTOWithRoles userDTO = await _userService.FindByIdAsync(entityId);
             return Ok(new
             {
                 id = userDTO.Id,
@@ -31,17 +31,17 @@ namespace PetShopAPIV2.Controllers
         }
 
         [HttpGet, Authorize(Roles = "Worker,Admin")]
-        public ActionResult<ICollection<UserDTO>> FindAll()
+        public async Task<IActionResult> FindAll()
         {
-            ICollection<UserDTO> userDTOs = _userService.FindAll();
+            ICollection<UserDTO> userDTOs = await _userService.FindAllAsync();
             return Ok(userDTOs);
         }
 
         [HttpDelete("{id}"), Authorize(Roles = "Admin")]
-        public IActionResult DeleteById(string id)
+        public async Task<IActionResult> DeleteById(string id)
         {
             int entityId = ParseUtils.ParsePathParam(id);
-            _userService.DeleteById(entityId);
+            await _userService.DeleteByIdAsync(entityId);
             return NoContent();
         }
     }

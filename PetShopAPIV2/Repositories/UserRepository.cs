@@ -14,9 +14,9 @@ namespace PetShopAPIV2.Repositories
         {
             _context = context;
         }
-        public void Commit()
+        public async Task CommitAsync()
         {
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
         public void Delete(User user)
@@ -24,10 +24,10 @@ namespace PetShopAPIV2.Repositories
             _context.Remove(user);
         }
 
-        public ICollection<User> FindAll()
+        public async Task<ICollection<User>> FindAllAsync()
         {
-            return _context.Users
-                .ToList();
+            return await _context.Users
+                .ToListAsync();
         }
 
         public User? FindByEmail(string email)
@@ -37,13 +37,20 @@ namespace PetShopAPIV2.Repositories
                 .FirstOrDefault();
         }
 
-        public User? FindById(int id)
+        public async Task<User?> FindByEmailAsync(string email)
         {
-            return _context.Users
+            return await _context.Users
+                .Where((user) => user.Email == email)
+                .FirstOrDefaultAsync();
+        }
+
+        public async Task<User?> FindByIdAsync(int id)
+        {
+            return await _context.Users
                 .Where((user) => user.Id == id)
                 .Include((user) => user.UserRoles)
                 .ThenInclude((userRole) => userRole.Role)
-                .FirstOrDefault();
+                .FirstOrDefaultAsync();
         }
 
         public void Save(User user)

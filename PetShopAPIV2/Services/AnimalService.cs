@@ -16,12 +16,12 @@ namespace PetShopAPIV2.Services
             _petRepository = petRepository;
         }
 
-        public AnimalDTO Save(AnimalInsertDTO animalInsertDTO)
+        public async Task<AnimalDTO> SaveAsync(AnimalInsertDTO animalInsertDTO)
         {
             Animal animal = new Animal();
             animal.Name = animalInsertDTO.Name;
             _animalRepository.Save(animal);
-            _animalRepository.Commit();
+            await _animalRepository.CommitAsync();
             return MapToDTO(animal);
         }
 
@@ -31,24 +31,24 @@ namespace PetShopAPIV2.Services
             return animalDTO;
         }
 
-        public ICollection<AnimalDTO> FindAll()
+        public async Task<ICollection<AnimalDTO>> FindAllAsync()
         {
-            ICollection<Animal> animals = _animalRepository.FindAll();
+            ICollection<Animal> animals = await _animalRepository.FindAllAsync();
             return animals.ToList()
                 .Select((animal) => MapToDTO(animal))
                 .ToList();
 
         }
 
-        public AnimalDTO FindById(int id)
+        public async Task<AnimalDTO> FindByIdAsync(int id)
         {
-            Animal animal = GetAnimalById(id);
+            Animal animal = await GetAnimalByIdAsync(id);
             return MapToDTO(animal);
         }
 
-        private Animal GetAnimalById(int id)
+        private async Task<Animal> GetAnimalByIdAsync(int id)
         {
-            Animal animal = _animalRepository.FindById(id);
+            Animal? animal = await _animalRepository.FindByIdAsync(id);
             if (animal == null)
             {
                 throw new EntityNotFoundException("Animal not found");
@@ -56,25 +56,25 @@ namespace PetShopAPIV2.Services
             return animal;
         }
 
-        public AnimalDTO Update(AnimalUpdateDTO animalUpdateDTO, int id)
+        public async Task<AnimalDTO> UpdateAsync(AnimalUpdateDTO animalUpdateDTO, int id)
         {
-            Animal animal = GetAnimalById(id);
+            Animal animal = await GetAnimalByIdAsync(id);
             animal.Name = animalUpdateDTO.Name;
             _animalRepository.Update(animal);
-            _animalRepository.Commit();
+            await _animalRepository.CommitAsync();
             return MapToDTO(animal);
         }
 
-        public void DeleteById(int id)
+        public async Task DeleteByIdAsync(int id)
         {
-            Animal animal = GetAnimalById(id);
-            bool existAnyPet = _petRepository.ExistsAnyPetOfAnimalType(id);
+            Animal animal = await GetAnimalByIdAsync(id);
+            bool existAnyPet = await _petRepository.ExistsAnyPetOfAnimalTypeAsync(id);
             if(existAnyPet)
             {
                 throw new BadRequestException("This animal type cannot be deleted");
             }
             _animalRepository.Delete(animal);
-            _animalRepository.Commit();
+            await _animalRepository.CommitAsync();
         }
     }
 }

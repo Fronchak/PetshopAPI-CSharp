@@ -13,7 +13,7 @@ namespace PetShopAPIV2.DTOs.Animals
         {
             IEnumerable<ValidationResult> result = new List<ValidationResult>();
             IAnimalRepository animalRepository = validationContext.GetRequiredService<IAnimalRepository>();
-            Animal animal = animalRepository.FindByName(Name);
+            Animal? animal = animalRepository.FindByName(Name);
             if (animal != null)
             {
                 ValidationResult validationResult = new ValidationResult("Name is already been used", new[] { nameof(Name) });

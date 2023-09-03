@@ -13,9 +13,9 @@ namespace PetShopAPIV2.Repositories
         {
             _context = context;
         }
-        public void Commit()
+        public async Task CommitAsync()
         {
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
         public void Delete(Client client)
@@ -28,9 +28,9 @@ namespace PetShopAPIV2.Repositories
             return _context.Clients.Any((client) => client.Id == id);
         }
 
-        public ICollection<Client> FindAll()
+        public async Task<ICollection<Client>> FindAllAsync()
         {
-            return _context.Clients.ToList();
+            return await _context.Clients.ToListAsync();
         }
 
         public Client? FindByEmail(string email)
@@ -40,18 +40,25 @@ namespace PetShopAPIV2.Repositories
                 .FirstOrDefault();
         }
 
-        public Client? FindById(int id)
+        public async Task<Client?> FindByEmailAsync(string email)
         {
-            return _context.Clients.Find(id);
+            return await _context.Clients
+                .Where((client) => client.Email == email)
+                .FirstOrDefaultAsync();
         }
 
-        public Client? FindByIdWithPets(int id)
+        public async Task<Client?> FindByIdAsync(int id)
         {
-            return _context.Clients
+            return await _context.Clients.FindAsync(id);
+        }
+
+        public async Task<Client?> FindByIdWithPetsAsync(int id)
+        {
+            return await _context.Clients
                 .Where((client) => client.Id == id)
                 .Include((client) => client.Pets)
                 .ThenInclude((pet) => pet.Animal)
-                .FirstOrDefault();
+                .FirstOrDefaultAsync();
         }
 
         public void Save(Client client)

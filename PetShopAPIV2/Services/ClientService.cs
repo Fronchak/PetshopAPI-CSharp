@@ -14,12 +14,12 @@ namespace PetShopAPIV2.Services
             _clientRepository = clientRepository;
         }
 
-        public ClientDTO Save(ClientInsertDTO clientInsertDTO)
+        public async Task<ClientDTO> SaveAsync(ClientInsertDTO clientInsertDTO)
         {
             Client client = new Client();
             CopyToClient(client, clientInsertDTO);
             _clientRepository.Save(client);
-            _clientRepository.Commit();
+            await _clientRepository.CommitAsync();
             return MapToClientDTO(client);
         }
 
@@ -50,18 +50,18 @@ namespace PetShopAPIV2.Services
             return new ClientSimpleDTO(client);
         }
 
-        public ICollection<ClientSimpleDTO> FindAll()
+        public async Task<ICollection<ClientSimpleDTO>> FindAllAsync()
         {
-            ICollection<Client> clients = _clientRepository.FindAll();
+            ICollection<Client> clients = await _clientRepository.FindAllAsync();
             return clients
                 .ToList()
                 .Select((client) => MapToSimpleClientDTO((client)))
                 .ToList();
         }
 
-        public ClientDTO FindById(int id)
+        public async Task<ClientDTO> FindByIdAsync(int id)
         {
-            Client? client = _clientRepository.FindByIdWithPets(id);
+            Client? client = await _clientRepository.FindByIdWithPetsAsync(id);
             if(client == null)
             {
                 throw new EntityNotFoundException("Client not found");
@@ -69,28 +69,28 @@ namespace PetShopAPIV2.Services
             return MapToClientDTO(client);
         }
 
-        public ClientDTO Update(ClientUpdateDTO clientUpdateDTO, int id)
+        public async Task<ClientDTO> UpdateAsync(ClientUpdateDTO clientUpdateDTO, int id)
         {
-            Client? client = _clientRepository.FindById(id);
+            Client? client = await _clientRepository.FindByIdAsync(id);
             if (client == null)
             {
                 throw new EntityNotFoundException("Client not found");
             }
             CopyToClient(client, clientUpdateDTO);
             _clientRepository.Update(client);
-            _clientRepository.Commit();
+            await _clientRepository.CommitAsync();
             return MapToClientDTO(client);
         }
 
-        public void DeleteById(int id)
+        public async Task DeleteById(int id)
         {
-            Client? client = _clientRepository.FindById(id);
+            Client? client = await _clientRepository.FindByIdAsync(id);
             if (client == null)
             {
                 throw new EntityNotFoundException("Client not found");
             }
             _clientRepository.Delete(client);
-            _clientRepository.Commit();
+            await _clientRepository.CommitAsync();
         }
     }
 }

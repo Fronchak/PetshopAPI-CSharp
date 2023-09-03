@@ -24,7 +24,7 @@ namespace PetShopAPIV2.Services
             _accessor = accessor;
         }
 
-        public void Register(UserRegisterDTO userRegisterDTO)
+        public async Task RegisterAsync(UserRegisterDTO userRegisterDTO)
         {
             string salt = BCrypt.Net.BCrypt.GenerateSalt();
             string hashPassword = BCrypt.Net.BCrypt.HashPassword(userRegisterDTO.Password, salt);
@@ -34,12 +34,12 @@ namespace PetShopAPIV2.Services
             user.Password = hashPassword;
 
             _userRepository.Save(user);
-            _userRepository.Commit();
+            await _userRepository.CommitAsync();
         }
 
-        public TokenDTO Login(UserLoginDTO userLoginDTO)
+        public async Task<TokenDTO> LoginAsync(UserLoginDTO userLoginDTO)
         {
-            User? user = _userRepository.FindByEmail(userLoginDTO.Email);
+            User? user = await _userRepository.FindByEmailAsync(userLoginDTO.Email);
             if (user == null)
             {
                 throw new UnauthorizedException("Email or password invalid");
@@ -49,13 +49,13 @@ namespace PetShopAPIV2.Services
             {
                 throw new UnauthorizedException("Email or password invalid");
             }
-            user = _userRepository.FindById(user.Id);
+            user = await _userRepository.FindByIdAsync(user.Id);
             TokenDTO tokenDTO = new TokenDTO();
             tokenDTO.Access_Token = CreateToken(user);
             return tokenDTO;
         }
 
-        private String CreateToken(User user)
+        private string CreateToken(User user)
         {
             List<Claim> claims = new List<Claim>();
             claims.Add(new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())); ;
@@ -80,11 +80,11 @@ namespace PetShopAPIV2.Services
             return token;
         }
 
-        public User GetAuthenticatedUser()
+        public async Task<User> GetAuthenticatedUserAsync()
         {
-            HttpContext context = _accessor.HttpContext;
-            int userId = Convert.ToInt32(context.User.FindFirstValue(ClaimTypes.NameIdentifier));
-            User user = _userRepository.FindById(userId);
+            HttpContext? context = _accessor.HttpContext;
+            int userId = Convert.ToInt32(context?.User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "0");
+            User user = await _userRepository.FindByIdAsync(userId);
             if(user == null)
             {
                 throw new EntityNotFoundException("User not found");
@@ -92,9 +92,9 @@ namespace PetShopAPIV2.Services
             return user;
         }
 
-        public UserDTOWithRoles GetAuthenticatedUserDTO()
+        public async Task<UserDTOWithRoles> GetAuthenticatedUserDTOAsync()
         {
-            User user = GetAuthenticatedUser();
+            User user = await GetAuthenticatedUserAsync();
             UserDTOWithRoles dto = new UserDTOWithRoles();
             dto.Id = user.Id;
             dto.Email = user.Email;

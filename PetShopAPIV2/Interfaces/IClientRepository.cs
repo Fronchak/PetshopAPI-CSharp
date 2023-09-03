@@ -4,15 +4,17 @@ namespace PetShopAPIV2.Interfaces
 {
     public interface IClientRepository
     {
-        Client? FindById(int id);
+        Task<Client?> FindByIdAsync(int id);
 
-        Client? FindByIdWithPets(int id);
+        Task<Client?> FindByIdWithPetsAsync(int id);
+
+        Task<Client?> FindByEmailAsync(string email);
 
         Client? FindByEmail(string email);
 
         bool Exists(int id);
 
-        ICollection<Client> FindAll();
+        Task<ICollection<Client>> FindAllAsync();
 
         void Save(Client client);
 
@@ -20,6 +22,6 @@ namespace PetShopAPIV2.Interfaces
 
         void Delete(Client client);
 
-        void Commit();
+        Task CommitAsync();
     }
 }

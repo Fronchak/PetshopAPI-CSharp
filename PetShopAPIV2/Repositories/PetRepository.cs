@@ -13,9 +13,9 @@ namespace PetShopAPIV2.Repositories
         {
             _context = context;
         }
-        public void Commit()
+        public async Task CommitAsync()
         {
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
         public void Delete(Pet pet)
@@ -23,31 +23,31 @@ namespace PetShopAPIV2.Repositories
             _context.Remove(pet);
         }
 
-        public bool ExistsAnyPetOfAnimalType(int animalId)
+        public async Task<bool> ExistsAnyPetOfAnimalTypeAsync(int animalId)
         {
-            return _context.Pets.Any((pet) => pet.Animal.Id == animalId);
+            return await _context.Pets.AnyAsync((pet) => pet.Animal.Id == animalId);
         }
 
-        public List<Pet> FindAll()
+        public async Task<List<Pet>> FindAllAsync()
         {
-            return _context.Pets
+            return await _context.Pets
                 .Include((pet) => pet.Animal)
                 .Include((pet) => pet.Owner)
-                .ToList();
+                .ToListAsync();
         }
 
-        public Pet? FindById(int id)
+        public async Task<Pet?> FindByIdAsync(int id)
         {
-            return _context.Pets.Find(id);
+            return await _context.Pets.FindAsync(id);
         }
 
-        public Pet? FindByIdWithRelationships(int id)
+        public async Task<Pet?> FindByIdWithRelationshipsAsync(int id)
         {
-            return _context.Pets
+            return await _context.Pets
                 .Where((pet) => pet.Id == id)
                 .Include((pet) => pet.Animal)
                 .Include((pet) => pet.Owner)
-                .FirstOrDefault();
+                .FirstOrDefaultAsync();
         }
 
         public void Save(Pet pet)

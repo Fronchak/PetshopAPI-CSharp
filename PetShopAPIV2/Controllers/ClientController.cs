@@ -18,40 +18,40 @@ namespace PetShopAPIV2.Controllers
         }
 
         [HttpGet("{id}"), Authorize(Roles = "Worker,Admin")]
-        public IActionResult FindById(string id)
+        public async Task<IActionResult> FindById(string id)
         {
             int entityId = ParseUtils.ParsePathParam(id);
-            ClientDTO clientDTO = _clientService.FindById(entityId);
+            ClientDTO clientDTO = await _clientService.FindByIdAsync(entityId);
             return Ok(clientDTO);
         }
 
         [HttpGet, Authorize(Roles = "Worker,Admin")]
-        public IActionResult FindAll()
+        public async Task<IActionResult> FindAll()
         {
-            ICollection<ClientSimpleDTO> dtos = _clientService.FindAll();
+            ICollection<ClientSimpleDTO> dtos = await _clientService.FindAllAsync();
             return Ok(dtos);
         }
 
         [HttpPost, Authorize(Roles = "Worker,Admin")]
-        public IActionResult Save([FromBody] ClientInsertDTO clientInsertDTO)
+        public async Task<IActionResult> Save([FromBody] ClientInsertDTO clientInsertDTO)
         {
-            ClientDTO clientDTO = _clientService.Save(clientInsertDTO);
+            ClientDTO clientDTO = await _clientService.SaveAsync(clientInsertDTO);
             return Ok(clientDTO);
         }
 
         [HttpPut("{id}"), Authorize(Roles = "Worker,Admin")]
-        public IActionResult Update([FromBody] ClientUpdateDTO clientUpdateDTO, [FromRoute] string id)
+        public async Task<IActionResult> Update([FromBody] ClientUpdateDTO clientUpdateDTO, [FromRoute] string id)
         {
             int entityId = ParseUtils.ParsePathParam(id);
-            ClientDTO clientDTO = _clientService.Update(clientUpdateDTO, entityId);
+            ClientDTO clientDTO = await _clientService.UpdateAsync(clientUpdateDTO, entityId);
             return Ok(clientDTO);
         }
 
         [HttpDelete("{id}"), Authorize(Roles = "Admin")]
-        public IActionResult Delete(string id)
+        public async Task<IActionResult> Delete(string id)
         {
             int entityId = ParseUtils.ParsePathParam(id);
-            _clientService.DeleteById(entityId);
+            await _clientService.DeleteById(entityId);
             return NoContent();
         }
     }

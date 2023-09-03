@@ -4,18 +4,19 @@ namespace PetShopAPIV2.Interfaces
 {
     public interface IUserRepository
     {
-        User? FindById(int id);
+        Task<User?> FindByIdAsync(int id);
+
+        Task<User?> FindByEmailAsync(string email);
 
         User? FindByEmail(string email);
 
-        ICollection<User> FindAll();
+        Task<ICollection<User>> FindAllAsync();
 
         void Save(User user);
 
         void Update(User user);
 
         void Delete(User user);
-
-        void Commit();
+        Task CommitAsync();
     }
 }

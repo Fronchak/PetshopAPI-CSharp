@@ -15,9 +15,9 @@ namespace PetShopAPIV2.Services
             _userRepository = userRepository;
         }
 
-        public UserDTOWithRoles FindById(int id)
+        public async Task<UserDTOWithRoles> FindByIdAsync(int id)
         {
-            User? user = _userRepository.FindById(id);
+            User? user = await _userRepository.FindByIdAsync(id);
             if (user == null)
             {
                 throw new EntityNotFoundException("User not found");
@@ -46,24 +46,24 @@ namespace PetShopAPIV2.Services
             return dto;
         }
 
-        public ICollection<UserDTO> FindAll()
+        public async Task<ICollection<UserDTO>> FindAllAsync()
         {
-            ICollection<User> users = _userRepository.FindAll();
+            ICollection<User> users = await _userRepository.FindAllAsync();
             ICollection<UserDTO> dtos = users.ToList()
                 .Select((user) => MapToDTO(user))
                 .ToList();
             return dtos;
         }
 
-        public void DeleteById(int id)
+        public async Task DeleteByIdAsync(int id)
         {
-            User? user = _userRepository.FindById(id);
+            User? user = await _userRepository.FindByIdAsync(id);
             if (user == null)
             {
                 throw new EntityNotFoundException("User not found");
             }
             _userRepository.Delete(user);
-            _userRepository.Commit();
+            await _userRepository.CommitAsync();
         }
     }
 }
