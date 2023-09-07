@@ -5,7 +5,7 @@ using PetShopAPIV2.Interfaces;
 
 namespace PetShopAPIV2.Services
 {
-    public class AnimalService
+    public class AnimalService : IAnimalService
     {
         private readonly IAnimalRepository _animalRepository;
         private readonly IPetRepository _petRepository;

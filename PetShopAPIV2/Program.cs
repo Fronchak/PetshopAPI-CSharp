@@ -40,7 +40,7 @@ builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<IAnimalRepository, AnimalRepository>();
-builder.Services.AddScoped<AnimalService>();
+builder.Services.AddScoped<IAnimalService, AnimalService>();
 builder.Services.AddScoped<IClientRepository, ClientRepository>();
 builder.Services.AddScoped<ClientService>();
 builder.Services.AddScoped<IPetRepository, PetRepository>();

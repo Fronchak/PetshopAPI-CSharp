@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PetShopAPIV2.DTOs.Animals;
+using PetShopAPIV2.Interfaces;
 using PetShopAPIV2.Services;
 using PetShopAPIV2.Utils;
 
@@ -10,9 +11,9 @@ namespace PetShopAPIV2.Controllers
     [ApiController]
     public class AnimalController : Controller
     {
-        private readonly AnimalService _animalService;
+        private readonly IAnimalService _animalService;
 
-        public AnimalController(AnimalService animalService)
+        public AnimalController(IAnimalService animalService)
         {
             _animalService = animalService;
         }
